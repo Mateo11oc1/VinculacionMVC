@@ -24,16 +24,18 @@ import openpyxl
 class Validaciones:
 
     def __init__(self):
-        self.carpetaExcel = "../"
-        self.archivos_excel = self.leerCarpeta()
+        pass
+        # self.carpetaExcel = "../"
+        # self.archivos_excel = self.leerCarpeta()
 
 
     #Obtengo una lista de todos lo archivos excel
-    def leerCarpeta(self):
+    def leerCarpeta(self, carpeta):
         # Obtener todos los archivos en la carpeta que tengan la extensión .xlsx
-        archivos_excel = (archivo for archivo in  glob.glob(os.path.join(self.carpetaExcel, '*.xlsx')) if not os.path.basename(archivo).startswith("~$"))
-        #Se filtran los archivos temporales
-        return archivos_excel
+        self.archivos_excel = [archivo for archivo in  glob.glob(os.path.join(carpeta, '*.xlsx')) if not os.path.basename(archivo).startswith("~$")]
+        
+            
+        
 
     #Devuelve la columna como un diccionario de acuerdo a los parametros
     def leerColumna(self):
@@ -52,8 +54,9 @@ class Validaciones:
                     #Desde la fila 7 en adelante porque alli empiezan los datos que interesan almacenar(nombre de atractor,
                     # numero,dias,jornada, tamanio)
                     lista = j.iloc[7:, h].values.tolist()
-                    columna = {"atractor": lista[0], "numAtractores":lista[2], "tamanio": lista[3:6], "jornada": lista[6:11],
-                               "dias": lista[12:22], "numColumna": h, "hoja": numHoja, "archivo": i[3:], "vacia":False, "listaErrores":{}}
+                    
+                    columna = {"grupo": j.iloc[1, 2], "zona":j.iloc[2, 2], "tramo": j.iloc[1, 12], "atractor": lista[0], "numAtractores":lista[2], "tamanio": lista[3:6], "jornada": lista[6:11],
+                            "dias": lista[12:22], "numColumna": h, "hoja": numHoja, "archivo": i, "vacia":False, "listaErrores":{}}
                     columna = self.validar(columna) #Se valida que la columna esta vacia al leer
 
                     if columna != None: #si la columna no esta vacia se agrega a la lista de columnas
@@ -151,10 +154,10 @@ class Validaciones:
         #si el numero de atractores es nulo
 
         if math.isnan(columna["numAtractores"]):
-            workbook = openpyxl.load_workbook("../" + columna["archivo"])
+            workbook = openpyxl.load_workbook(columna["archivo"])
             hojaLeida = workbook.worksheets[columna["hoja"]]
             hojaLeida.cell(row = 11, column = columna["numColumna"]+1).value=sum(x for x in columna['tamanio'] if not math.isnan(x))
-            workbook.save("../" + columna["archivo"])
+            workbook.save(columna["archivo"])
 
     #Valida que los datos de jornada, no estan vacios
     def validarJornadaDatosVacios(self, columna: dict) -> list:
@@ -205,13 +208,13 @@ class Validaciones:
         if not math.isnan(sum(x for x in columna["jornada"] if not math.isnan(x))):
 
             if not math.isnan(columna["jornada"][0]) and not math.isnan(columna["jornada"][1]) and columna["jornada"][0] == columna["numAtractores"] and columna["jornada"][1] == columna["numAtractores"]:
-                workbook = openpyxl.load_workbook("../" + columna["archivo"])
+                workbook = openpyxl.load_workbook(columna["archivo"])
                 hojaLeida = workbook.worksheets[columna["hoja"]]
                 #las filas 17, 15 y 16 corresponden a los datos diurno, vespertino y matutino
                 hojaLeida.cell(row = 17, column = columna["numColumna"] + 1).value = columna["numAtractores"]
                 hojaLeida.cell(row = 15, column = columna["numColumna"] + 1).value = ""
                 hojaLeida.cell(row = 16, column = columna["numColumna"] + 1).value = ""
-                workbook.save("../" + columna["archivo"])
+                workbook.save(columna["archivo"])
 
     #Valida que los datos de dias, no estan vacios
     def validarDiasDatosVacios(self, columna: dict) -> list:
@@ -313,5 +316,5 @@ class Validaciones:
 
 
 
-validaciones = Validaciones()
-validaciones.leerColumna()
+# validaciones = Validaciones()
+# validaciones.leerColumna()
