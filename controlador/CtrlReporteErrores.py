@@ -8,6 +8,7 @@ from PyQt6.QtGui import QStandardItemModel, QStandardItem
 
 # from PyQt6.uic.properties import QtWidgets
 from vista.reportes import Ventana
+from vista.reportes import LoadingWidget
 from modelo.validaciones import * 
 
 class Controlador(QWidget):
@@ -28,6 +29,7 @@ class Controlador(QWidget):
         self.vista.ui.btnSeleccionarArchivo.clicked.connect(self.seleccionarArchivo)
         
         
+  
         
     def buscarCarpeta(self):
        
@@ -39,6 +41,12 @@ class Controlador(QWidget):
              
             columnasConErrores = self.modelo.leerColumna('errores')
             
+            self.loading=LoadingWidget()
+            self.loading.show()
+            
+            for i in range(len(columnasConErrores)):
+                progress=int(i/(len(columnasConErrores)-1)*100)
+                self.loading.set_progress(progress)
 
             for i in range(len(columnasConErrores)):
                 self.tabla.setItem(i,0,QStandardItem(columnasConErrores[i]["archivo"]))
@@ -48,6 +56,7 @@ class Controlador(QWidget):
                 self.tabla.setItem(i,4,QStandardItem(columnasConErrores[i]["tramo"]))
                 self.tabla.setItem(i,5,QStandardItem(str(columnasConErrores[i]["zona"])))
                 self.tabla.setItem(i,6,QStandardItem(str(columnasConErrores[i]["grupo"])))
+                  
             
             self.vista.ui.tblTablaErrores.resizeColumnsToContents()
             self.vista.ui.tblTablaErrores.resizeRowsToContents()

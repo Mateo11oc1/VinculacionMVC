@@ -9,6 +9,10 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtGui import QIcon
 
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QMovie
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QLabel, QProgressBar
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -146,6 +150,8 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "TextLabel"))
         self.label_7.setText(_translate("MainWindow", "TextLabel"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Reporte de errores"))
+        loading_widget = LoadingWidget()
+        #addWidget(loading_widget)
 
 
 """if __name__ == "__main__":
@@ -167,4 +173,34 @@ class Ventana(QtWidgets.QMainWindow):
         self.setWindowIcon(QIcon("./imagenes/icono-ventana.png"))
         self.show()
        
+
+
+
+
+class LoadingWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # Configurar el layout
+        layout = QVBoxLayout(self)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Añadir el label con el mensaje de carga
+        self.loading_label = QLabel("Cargando...")
+        layout.addWidget(self.loading_label)
+
+        # Añadir la animación de carga
+        self.loading_movie = QMovie("./imagenes/cargando.gif")
+        self.loading_label.setMovie(self.loading_movie)
+        self.loading_movie.start()
+
+        # Añadir la barra de progreso
+        self.progress_bar = QProgressBar(self)
+        self.progress_bar.setRange(0, 100)
+        self.progress_bar.setValue(0)
+        layout.addWidget(self.progress_bar)
+
+    def set_progress(self, value):
+        self.progress_bar.setValue(value)
+
        
