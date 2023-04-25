@@ -7,11 +7,13 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6.QtGui import QIcon
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
+        
         MainWindow.resize(1300, 820)
         MainWindow.setStyleSheet(".QPushButton{\n"
 "    color: rgb(0, 0, 127);\n"
@@ -57,20 +59,18 @@ class Ui_MainWindow(object):
         self.label_3.setText("")
         self.label_3.setPixmap(QtGui.QPixmap("./imagenes/moto.png"))
         self.label_3.setObjectName("label_3")
-        self.listArchivos = QtWidgets.QListView(self.fondoErrores)
-        self.listArchivos.setGeometry(QtCore.QRect(90, 360, 256, 351))
-        self.listArchivos.setStyleSheet("background-color: rgb(255,255,255);\n"
-"border-radius:15;")
-        self.listArchivos.setObjectName("listArchivos")
+         
         self.tblTablaErrores = QtWidgets.QTableView(self.fondoErrores)
-        self.tblTablaErrores.setGeometry(QtCore.QRect(440, 360, 751, 351))
+        self.tblTablaErrores.setGeometry(QtCore.QRect(30, 270, 1222, 440))
+        font = QtGui.QFont()
+        font.setPointSize(11)
         self.tblTablaErrores.setStyleSheet("background-color: rgb(255,255,255);\n"
 "border-radius:15;\n"
 "\n"
 "")
         self.tblTablaErrores.setObjectName("tblTablaErrores")
         self.btnVerObservaciones = QtWidgets.QPushButton(self.fondoErrores)
-        self.btnVerObservaciones.setGeometry(QtCore.QRect(140, 240, 211, 61))
+        self.btnVerObservaciones.setGeometry(QtCore.QRect(140, 150, 211, 61))
         self.btnVerObservaciones.setStyleSheet("")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("./imagenes/ver-observaciones.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
@@ -78,7 +78,7 @@ class Ui_MainWindow(object):
         self.btnVerObservaciones.setIconSize(QtCore.QSize(50, 50))
         self.btnVerObservaciones.setObjectName("btnVerObservaciones")
         self.btnSeleccionarArchivo = QtWidgets.QPushButton(self.fondoErrores)
-        self.btnSeleccionarArchivo.setGeometry(QtCore.QRect(520, 240, 211, 61))
+        self.btnSeleccionarArchivo.setGeometry(QtCore.QRect(520, 150, 211, 61))
         self.btnSeleccionarArchivo.setStyleSheet("")
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap("./imagenes/archivos.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
@@ -86,7 +86,7 @@ class Ui_MainWindow(object):
         self.btnSeleccionarArchivo.setIconSize(QtCore.QSize(50, 50))
         self.btnSeleccionarArchivo.setObjectName("btnSeleccionarArchivo")
         self.btnSeleccionarCarpeta = QtWidgets.QPushButton(self.fondoErrores)
-        self.btnSeleccionarCarpeta.setGeometry(QtCore.QRect(850, 240, 211, 61))
+        self.btnSeleccionarCarpeta.setGeometry(QtCore.QRect(850, 150, 211, 61))
         self.btnSeleccionarCarpeta.setStyleSheet("")
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap("./imagenes/seleccionar-carpteta.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
@@ -94,7 +94,7 @@ class Ui_MainWindow(object):
         self.btnSeleccionarCarpeta.setIconSize(QtCore.QSize(50, 50))
         self.btnSeleccionarCarpeta.setObjectName("btnSeleccionarCarpeta")
         self.label_4 = QtWidgets.QLabel(self.fondoErrores)
-        self.label_4.setGeometry(QtCore.QRect(390, 120, 471, 51))
+        self.label_4.setGeometry(QtCore.QRect(390, 60, 471, 51))
         font = QtGui.QFont()
         font.setPointSize(22)
         font.setBold(True)
@@ -102,17 +102,7 @@ class Ui_MainWindow(object):
         self.label_4.setFont(font)
         self.label_4.setStyleSheet("color: rgb(255, 255, 255);")
         self.label_4.setObjectName("label_4")
-        self.lblArchivos = QtWidgets.QLabel(self.fondoErrores)
-        self.lblArchivos.setEnabled(True)
-        self.lblArchivos.setGeometry(QtCore.QRect(100, 320, 231, 31))
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        font.setBold(True)
-        font.setWeight(75)
-        self.lblArchivos.setFont(font)
-        self.lblArchivos.setText("")
-        self.lblArchivos.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-        self.lblArchivos.setObjectName("lblArchivos")
+         
         self.label_6 = QtWidgets.QLabel(self.fondoErrores)
         self.label_6.setGeometry(QtCore.QRect(670, 780, 231, 21))
         self.label_6.setObjectName("label_6")
@@ -120,7 +110,7 @@ class Ui_MainWindow(object):
         self.label_7.setGeometry(QtCore.QRect(620, 780, 231, 21))
         self.label_7.setObjectName("label_7")
         self.label.raise_()
-        self.listArchivos.raise_()
+         
         self.label_3.raise_()
         self.btnSeleccionarCarpeta.raise_()
         self.label_2.raise_()
@@ -128,7 +118,7 @@ class Ui_MainWindow(object):
         self.label_4.raise_()
         self.tblTablaErrores.raise_()
         self.btnSeleccionarArchivo.raise_()
-        self.lblArchivos.raise_()
+         
         self.label_6.raise_()
         self.label_7.raise_()
         self.tabWidget.addTab(self.tab_2, "")
@@ -145,7 +135,7 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Tab 1"))
-        self.btnVerObservaciones.setToolTip(_translate("MainWindow", "Al dar clic, podrá observar las observaciones que tienen los tramos de manera resumida en la tabla "))
+        self.btnVerObservaciones.setToolTip(_translate("MainWindow", "Seleccione una carpeta para ver las observaciones que tienen los tramos de manera resumida en la tabla "))
         self.btnVerObservaciones.setText(_translate("MainWindow", "Ver observaciones"))
         self.btnSeleccionarArchivo.setToolTip(_translate("MainWindow", "Seleccione un solo archivo excel que desee validar, en la tabla se presentará un resumen de los errores"))
         self.btnSeleccionarArchivo.setText(_translate("MainWindow", "Seleccionar archivo"))
@@ -173,4 +163,8 @@ class Ventana(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowTitle("Validacion y verificacion de datos")
+        self.setWindowIcon(QIcon("./imagenes/icono-ventana.png"))
         self.show()
+       
+       
