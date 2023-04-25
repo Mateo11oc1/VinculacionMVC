@@ -38,9 +38,11 @@ class Validaciones:
         
 
     #Devuelve la columna como un diccionario de acuerdo a los parametros
-    def leerColumna(self):
+    #opcion es para ver si se quiere retornar las columnas con errores o los archivos con observaciones
+    def leerColumna(self, opcion)->list:
         self.listaColumnas = []
-
+        self.columnasConErrores=[]
+        self.archivoConObservaciones=[]
         #Recorro todos los archivos
         for i in self.archivos_excel:
             #Leo todas las hojas de una vez del documento
@@ -50,22 +52,44 @@ class Validaciones:
             for j in leido.values():
                 #Recorro cada columna
                 #shape[1] nos da el numero de columnas de la hoja
+                archivo={"hoja":numHoja, "archivo":os.path.basename(i),"grupo": j.iloc[1, 2], "zona":j.iloc[2, 2], "tramo": j.iloc[1, 12],"observaciones":j.iloc[30,1]}
+                if opcion=='observaciones':
+                        #Si las observaciones no estan vacias
+                        if archivo["observaciones"] is not None and not pandas.isna(archivo["observaciones"]):
+                            self.archivoConObservaciones.append(archivo)
+
                 for h in range(2, j.shape[1]):
                     #Desde la fila 7 en adelante porque alli empiezan los datos que interesan almacenar(nombre de atractor,
                     # numero,dias,jornada, tamanio)
                     lista = j.iloc[7:, h].values.tolist()
                     
-                    columna = {"grupo": j.iloc[1, 2], "zona":j.iloc[2, 2], "tramo": j.iloc[1, 12], "atractor": lista[0], "numAtractores":lista[2], "tamanio": lista[3:6], "jornada": lista[6:11],
-                            "dias": lista[12:22], "numColumna": h, "hoja": numHoja, "archivo": i, "vacia":False, "listaErrores":{}}
-                    columna = self.validar(columna) #Se valida que la columna esta vacia al leer
+                    columna = { "atractor": lista[0], "numAtractores":lista[2], "tamanio": lista[3:6], "jornada": lista[6:11],
+                            "dias": lista[12:22], "numColumna": h, "hoja": numHoja, "archivo": os.path.basename(i), "vacia":False, "listaErrores":{},
+                            "grupo": j.iloc[1, 2], "zona":j.iloc[2, 2], "tramo": j.iloc[1, 12],"observaciones":j.iloc[30,1]}
+                    #os.path.basename(i) es para q solo se escriba el nombre del archivo, no toda la ruta
+                    if opcion=='errores':
+                        columna = self.validar(columna) #Se valida que la columna esta vacia al leer
 
-                    if columna != None: #si la columna no esta vacia se agrega a la lista de columnas
-                        print(f'---------\nArchivo: {columna["archivo"]}\n Hoja: {columna["hoja"]}\n Columna: {columna["numColumna"]}')
-                        print(columna)
-                        self.listaColumnas.append(columna)
+                        if columna != None: #si la columna no esta vacia se agrega a la lista de columnas
+                            #print(f'---------\nArchivo: {columna["archivo"]}\n Hoja: {columna["hoja"]}\n Columna: {columna["numColumna"]}')
+                            #print(columna)
+                            self.listaColumnas.append(columna)
+                            for k in columna:
+                                for clave, valor in columna["listaErrores"].items():
+                                #si en listaErrores hay un valor del diccionario que contiene True(contiene un error) se agrega a la lista de columnas con errores
+                                    if valor:
+                                        self.columnasConErrores.append(columna)
+                                        break
+                                    
+                                break
+                    
 
 
                 numHoja += 1
+        if opcion=='errores':
+            return self.columnasConErrores
+        elif opcion=='observaciones':
+            return self.archivoConObservaciones
 
     #Si una columna esta vacia no sera necesario realizar las validaciones
     def validarColVacia(self, columna: dict) -> list:
@@ -92,7 +116,7 @@ class Validaciones:
         #si no es un numero entero
         #si en numero de atractores hay un dato tipo string
         if isinstance(columna["numAtractores"], str):
-            logging.error("Numero de atractores no es un entero")
+            #logging.error("Numero de atractores no es un entero")
             columna["listaErrores"][1] = True
             return [columna, True]
         #si en numero de atractores hay un flotante
@@ -102,7 +126,7 @@ class Validaciones:
             if isinstance(columna["numAtractores"], float) and not math.isnan(columna["numAtractores"]):
 
                 #Esto reporta en consola como si fuera un error
-                logging.error("Numero de atractores no es un entero")
+                #logging.error("Numero de atractores no es un entero")
                 columna["listaErrores"][1] = True
                 return [columna, True]
 
@@ -113,7 +137,7 @@ class Validaciones:
             for j in i:
                 #si el valor de la celda es un string, esta vacio o es un numero decimal
                 if isinstance(j, str) or (not math.isnan(j) and not isinstance(j, int)):
-                    logging.error("El valor no es un numero")
+                    #logging.error("El valor no es un numero")
                     columna["listaErrores"][1] = True
                     return [columna, True]
 
@@ -266,8 +290,17 @@ class Validaciones:
             return
         else:
             caracteres = self.validarCaracteres(vacia[0])
-            #si una columna contiene caracteres ya no se valida nada mas
+            #si una columna contiene caracteres ya no se valida nada mas y se marcan todo el resto de errores como falsos
             if caracteres[1]:
+                caracteres[0]["listaErrores"][2] = False
+                caracteres[0]["listaErrores"][3] = False
+                caracteres[0]["listaErrores"][4] = False
+                caracteres[0]["listaErrores"][5] = False
+                caracteres[0]["listaErrores"][6] = False
+                caracteres[0]["listaErrores"][7] = False
+                caracteres[0]["listaErrores"][8] = False
+                caracteres[0]["listaErrores"][9] = False
+                    
                 return caracteres[0]
             else:
                 #las columnas 53 y 54 corresponden a Vivienda de la cual no es necesario especificar tamanio, jornada
